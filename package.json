@@ -1,0 +1,54 @@
+{
+	"name": "problems-copy",
+	"displayName": "Problems: Copy",
+	"description": "Copy the Problem messages",
+  "publisher": "ArturoDent",
+  "license": "MIT",
+	"version": "0.0.1",
+    "repository": {
+    "type": "git",
+		"url": "https://github.com/ArturoDent/problems-copy"
+  },
+	"engines": {
+		"vscode": "^1.46.0"
+	},
+  "preview": true,
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:problems-copy.copyAll",
+    "onCommand:problems-copy.copyCurrentFileMessages"
+	],
+	"main": "./src/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "problems-copy.copyAll",
+				"title": "Copy All Problems",
+        "category": "Problems"
+			},
+      {
+				"command": "problems-copy.copyCurrentFileMessages",
+				"title": "Copy All Problems for the Current File",
+        "category": "Problems"
+			}
+		]
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "node ./test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.46.0",
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^7.0.2",
+		"@types/node": "^13.11.0",
+		"eslint": "^6.8.0",
+		"glob": "^7.1.6",
+		"mocha": "^7.1.2",
+		"typescript": "^3.8.3",
+		"vscode-test": "^1.3.0"
+	}
+}

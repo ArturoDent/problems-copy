@@ -1,0 +1,146 @@
+{
+	"resource": "/c:/Users/Mark/folder-operations/extension.js",
+	"owner": "eslint",
+	"code": {
+		"value": "no-unused-vars",
+		"target": {
+			"$mid": 1,
+			"external": "https://eslint.org/docs/rules/no-unused-vars",
+			"path": "/docs/rules/no-unused-vars",
+			"scheme": "https",
+			"authority": "eslint.org"
+		}
+	},
+	"severity": 4,
+	"message": "'args' is defined but never used.",
+	"source": "eslint",
+	"startLineNumber": 32,
+	"startColumn": 102,
+	"endLineNumber": 32,
+	"endColumn": 106,
+	"tags": [
+		1
+	]
+}
+
+-------------------
+
+[
+	{
+		"resource": "/c:/Users/Mark/folder-operations/extension.js",
+		"code": {
+			"value": "no-unused-vars",
+			"target": {
+				"$mid": 1,
+				"path": "/docs/rules/no-unused-vars",
+				"scheme": "https",
+				"authority": "eslint.org"
+			}
+		},
+		"severity": 1,
+		"message": "'args' is defined but never used.",
+		"source": "eslint",
+		"startLineNumber": 32,
+		"startColumn": 102,
+		"endLineNumber": 32,
+		"endColumn": 106
+	},
+	{
+		"resource": "/c:/Users/Mark/folder-operations/extension.js",
+		"code": {
+			"value": "no-unused-vars",
+			"target": {
+				"$mid": 1,
+				"path": "/docs/rules/no-unused-vars",
+				"scheme": "https",
+				"authority": "eslint.org"
+			}
+		},
+		"severity": 1,
+		"message": "'diagnostics' is assigned a value but never used.",
+		"source": "eslint",
+		"startLineNumber": 53,
+		"startColumn": 10,
+		"endLineNumber": 53,
+		"endColumn": 21
+	},
+	{
+		"resource": "/c:/Users/Mark/folder-operations/extension.js",
+		"code": {
+			"value": "no-unused-vars",
+			"target": {
+				"$mid": 1,
+				"path": "/docs/rules/no-unused-vars",
+				"scheme": "https",
+				"authority": "eslint.org"
+			}
+		},
+		"severity": 1,
+		"message": "'token' is defined but never used.",
+		"source": "eslint",
+		"startLineNumber": 63,
+		"startColumn": 36,
+		"endLineNumber": 63,
+		"endColumn": 41
+	}
+]
+
+[
+	{
+		"code": {
+			"value": "no-unused-vars",
+			"target": {
+				"$mid": 1,
+				"path": "/docs/rules/no-unused-vars",
+				"scheme": "https",
+				"authority": "eslint.org"
+			}
+		},
+		"severity": 1,
+		"message": "'args' is defined but never used.",
+		"source": "eslint",
+		"resource": "/c:/Users/Mark/folder-operations/extension.js",
+		"startLineNumber": 32,
+		"startColumn": 102,
+		"endLineNumber": 32,
+		"endColumn": 106
+	},
+	{
+		"code": {
+			"value": "no-unused-vars",
+			"target": {
+				"$mid": 1,
+				"path": "/docs/rules/no-unused-vars",
+				"scheme": "https",
+				"authority": "eslint.org"
+			}
+		},
+		"severity": 1,
+		"message": "'diagnostics' is assigned a value but never used.",
+		"source": "eslint",
+		"resource": "/c:/Users/Mark/folder-operations/extension.js",
+		"startLineNumber": 53,
+		"startColumn": 10,
+		"endLineNumber": 53,
+		"endColumn": 21
+	},
+	{
+		"code": {
+			"value": "no-unused-vars",
+			"target": {
+				"$mid": 1,
+				"path": "/docs/rules/no-unused-vars",
+				"scheme": "https",
+				"authority": "eslint.org"
+			}
+		},
+		"severity": 1,
+		"message": "'token' is defined but never used.",
+		"source": "eslint",
+		"resource": "/c:/Users/Mark/folder-operations/extension.js",
+		"startLineNumber": 63,
+		"startColumn": 36,
+		"endLineNumber": 63,
+		"endColumn": 41
+	}
+]
