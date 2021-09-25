@@ -144,3 +144,175 @@
 		"endColumn": 41
 	}
 ]
+
+-----------  copy message  ------------------------
+
+Property 'getDiagnostics2' does not exist on type 'typeof languages'. Did you mean 'getDiagnostics'?
+
+{
+	"resource": "/C:/Users/Mark/problems-copy/src/extension.js",
+	"owner": "typescript",
+	"code": "2551",
+	"severity": 8,
+	"message": "Property 'getDiagnostics2' does not exist on type 'typeof languages'. Did you mean 'getDiagnostics'?",
+	"source": "ts",
+	"startLineNumber": 15,
+	"startColumn": 40,
+	"endLineNumber": 15,
+	"endColumn": 55,
+	"relatedInformation": [
+		{
+			"startLineNumber": 11128,
+			"startColumn": 25,
+			"endLineNumber": 11128,
+			"endColumn": 39,
+			"message": "'getDiagnostics' is declared here.",
+			"resource": "/C:/Users/Mark/problems-copy/node_modules/@types/vscode/index.d.ts"
+		}
+	]
+}
+
+Property 'getDiagnostics2' does not exist on type 'typeof languages'. Did you mean 'getDiagnostics'? source(code) [line:col]
+
+---------------------
+
+/c:/Users/Mark/folder-operations/extension.js, 'args' is defined but never used.eslint([object Object]), [32:102]
+/c:/Users/Mark/folder-operations/extension.js, 'diagnostics' is assigned a value but never used.eslint([object Object]), [53:10]
+/c:/Users/Mark/folder-operations/extension.js, 'token' is defined but never used.eslint([object Object]), [63:36]
+/c:/Users/Mark/folder-operations/test/suite/extension.test.js, ')' expected.ts(1005), [17:2]
+/c:/Users/Mark/folder-operations/test/suite/extension.test.js, Cannot assign to 'vscode' because it is an import.ts(2632), [8:1]
+/c:/Users/Mark/folder-operations/test/suite/extension.test.js, Parsing error: Unexpected token ;eslint(undefined), [17:2]
+
+----------------
+
+test/suite/extension.test.js, "')' expected.", ts(1005), [17:2]
+test/suite/extension.test.js, "Cannot assign to 'vscode' because it is an import.", ts(2632), [8:1]
+test/suite/extension.test.js, "Parsing error: Unexpected token ;", eslint, [17:2]
+extension.js, "'args' is defined but never used.", eslint(no-unused-vars), [32:102]
+extension.js, "'diagnostics' is assigned a value but never used.", eslint(no-unused-vars), [53:10]
+extension.js, "'token' is defined but never used.", eslint(no-unused-vars), [63:36]
+
+---------------------
+
+Error, test/suite/extension.test.js, "')' expected.", ts(1005), [17:2]
+Error, test/suite/extension.test.js, "Cannot assign to 'vscode' because it is an import.", ts(2632), [8:1]
+Error, test/suite/extension.test.js, "Parsing error: Unexpected token ;", eslint, [17:2]
+Warning, extension.js, "'args' is defined but never used.", eslint(no-unused-vars), [32:102]
+Warning, extension.js, "'diagnostics' is assigned a value but never used.", eslint(no-unused-vars), [53:10]
+Warning, extension.js, "'token' is defined but never used.", eslint(no-unused-vars), [63:36]
+
+--------------------
+
+extension.js, Warning, "'args' is defined but never used.", eslint(no-unused-vars), [32:102]
+extension.js, Warning, "'diagnostics' is assigned a value but never used.", eslint(no-unused-vars), [53:10]
+extension.js, Warning, "'token' is defined but never used.", eslint(no-unused-vars), [63:36]
+test/suite/extension.test.js, Error, "')' expected.", ts(1005), [17:2]
+test/suite/extension.test.js, Error, "Cannot assign to 'vscode' because it is an import.", ts(2632), [8:1]
+test/suite/extension.test.js, Error, "Parsing error: Unexpected token ;", eslint, [17:2]
+
+--------------------
+
+extension.js, "'args' is defined but never used.", eslint(no-unused-vars), occurs on line 32 at column 102
+extension.js, "'diagnostics' is assigned a value but never used.", eslint(no-unused-vars), occurs on line 53 at column 10
+extension.js, "'token' is defined but never used.", eslint(no-unused-vars), occurs on line 63 at column 36
+test/suite/extension.test.js, "')' expected.", ts(1005), occurs on line 17 at column 2
+test/suite/extension.test.js, "Cannot assign to 'vscode' because it is an import.", ts(2632), occurs on line 8 at column 1
+test/suite/extension.test.js, "Parsing error: Unexpected token ;", eslint(), occurs on line 17 at column 2
+
+-----------------------
+
+extension.js  ::   'args' is defined but never used.   -->  line 32 : column 102
+extension.js  ::   'diagnostics' is assigned a value but never used.   -->  line 53 : column 10
+extension.js  ::   'token' is defined but never used.   -->  line 63 : column 36
+test/suite/extension.test.js  ::   ')' expected.   -->  line 17 : column 2
+test/suite/extension.test.js  ::   Cannot assign to 'vscode' because it is an import.   -->  line 8 : column 1
+test/suite/extension.test.js  ::   Parsing error: Unexpected token ;   -->  line 17 : column 2
+
+-----------------
+
+extension.js  ::   Cannot find name 'registerCursorMove2'. Did you mean 'registerCursorMove'?   -->  line 26 : column 2
+	extension.js :  'registerCursorMove' is declared here.[547:16]
+extension.js  ::   'registerCursorMove2' is not defined.   -->  line 26 : column 2
+extension.js  ::   'args' is defined but never used.   -->  line 32 : column 102
+extension.js  ::   'diagnostics' is assigned a value but never used.   -->  line 53 : column 10
+extension.js  ::   'token' is defined but never used.   -->  line 63 : column 36
+extension.js  ::   'registerCursorMove' is defined but never used.   -->  line 547 : column 16
+
+-----------------
+
+extension.js  ::   Cannot find name 'registerCursorMove2'. Did you mean 'registerCursorMove'?   -->  line 26 : column 2
+	extension.js :  'registerCursorMove' is declared here.  [547:16]
+
+extension.js  ::   'registerCursorMove2' is not defined.   -->  line 26 : column 2
+
+extension.js  ::   'args' is defined but never used.   -->  line 32 : column 102
+
+extension.js  ::   'diagnostics' is assigned a value but never used.   -->  line 53 : column 10
+
+extension.js  ::   'token' is defined but never used.   -->  line 63 : column 36
+
+extension.js  ::   'registerCursorMove' is defined but never used.   -->  line 547 : column 16
+
+------------------
+
+extension.js  ::   Cannot find name 'registerCursorMove2'. Did you mean 'registerCursorMove'?   -->  line 26 : column 2
+	extension.js :  'registerCursorMove' is declared here.  [547:16]
+extension.js  ::   'registerCursorMove2' is not defined.   -->  line 26 : column 2
+extension.js  ::   'args' is defined but never used.   -->  line 32 : column 102
+extension.js  ::   'diagnostics' is assigned a value but never used.   -->  line 53 : column 10
+extension.js  ::   'token' is defined but never used.   -->  line 63 : column 36
+extension.js  ::   'registerCursorMove' is defined but never used.   -->  line 547 : column 16
+
+--------------------------
+
+extension.js  ::   Cannot find name 'registerCursorMove2'. Did you mean 'registerCursorMove'?   -->  line 26 : column 2
+	extension.js :  'registerCursorMove' is declared here.  [547:16]
+extension.js  ::   'registerCursorMove2' is not defined.   -->  line 26 : column 2
+extension.js  ::   'args' is defined but never used.   -->  line 32 : column 102
+extension.js  ::   'diagnostics' is assigned a value but never used.   -->  line 53 : column 10
+extension.js  ::   'token' is defined but never used.   -->  line 63 : column 36
+extension.js  ::   'registerCursorMove' is defined but never used.   -->  line 547 : column 16
+
+------------------------
+
+extension.js  ::   Cannot find name 'registerCursorMove2'. Did you mean 'registerCursorMove'?   -->  line 26 : column 2
+	extension.js :  'registerCursorMove' is declared here.  [547:16]
+
+extension.js  ::   'registerCursorMove2' is not defined.   -->  line 26 : column 2
+
+extension.js  ::   'args' is defined but never used.   -->  line 32 : column 102
+
+extension.js  ::   'diagnostics' is assigned a value but never used.   -->  line 53 : column 10
+
+extension.js  ::   'token' is defined but never used.   -->  line 63 : column 36
+
+extension.js  ::   'registerCursorMove' is defined but never used.   -->  line 547 : column 16
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

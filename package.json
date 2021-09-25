@@ -2,23 +2,24 @@
 	"name": "problems-copy",
 	"displayName": "Problems: Copy",
 	"description": "Copy the Problem messages",
-  "publisher": "ArturoDent",
-  "license": "MIT",
+	"publisher": "ArturoDent",
+	"license": "MIT",
 	"version": "0.0.1",
-    "repository": {
-    "type": "git",
+	"repository": {
+		"type": "git",
 		"url": "https://github.com/ArturoDent/problems-copy"
-  },
+	},
 	"engines": {
 		"vscode": "^1.46.0"
 	},
-  "preview": true,
+	"preview": true,
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
+    "onStartupFinished",
 		"onCommand:problems-copy.copyAll",
-    "onCommand:problems-copy.copyCurrentFileMessages"
+		"onCommand:problems-copy.copyCurrentFileMessages"
 	],
 	"main": "./src/extension.js",
 	"contributes": {
@@ -26,12 +27,31 @@
 			{
 				"command": "problems-copy.copyAll",
 				"title": "Copy All Problems",
-        "category": "Problems"
+				"category": "Problems"
 			},
-      {
+			{
 				"command": "problems-copy.copyCurrentFileMessages",
 				"title": "Copy All Problems for the Current File",
-        "category": "Problems"
+				"category": "Problems"
+			}
+		],
+		"configuration": [
+			{
+				"title": "Problems: Copy",
+				"properties": {
+					"problems-copy.simpleTemplate": {
+						"type": "string",
+						"scope": "machine",
+						"default": "$severity, $path, \"$message\", $source(code), [$startLine:$startCol]",
+						"markdownDescription": "Create a template for simpler output template. The default is comma-separated but that is not mandatory.  Available entries: `$severity, $path, $message, $source, $code, $startLine, $startCol, $endLine, $endCol, $relatedInfo`."
+					},
+					"problems-copy.useSimpleTemplate": {
+						"type": "boolean",
+						"scope": "machine",
+						"default": false,
+						"markdownDescription": "Whether to **always** use the simpleTemplate form of copied problems.  This will apply to all commands unless specifically overridden in a keybinding."
+					}
+				}
 			}
 		]
 	},
@@ -41,14 +61,17 @@
 		"test": "node ./test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.46.0",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^13.11.0",
+		"@types/vscode": "^1.46.0",
 		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.1.2",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.3.0"
+	},
+	"dependencies": {
+		"jsonc-parser": "^3.0.0"
 	}
 }
