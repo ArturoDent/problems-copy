@@ -3,7 +3,7 @@
  * @returns {Array}
  */
 exports.getKeys = function () {
-  return ["errors", "warnings", "hints", "informations"];
+  return ["errors", "warnings", "hints", "informations", "simpleTemplate"];
 }
 
 /**
@@ -12,7 +12,8 @@ exports.getKeys = function () {
  */
 exports.getValues = function () {
 	return {
-		errors: [true, false], warnings: [true, false],	hints: [true, false], informations: [true, false]
+    errors: [true, false], warnings: [true, false], hints: [true, false],
+    informations: [true, false], simpleTemplate: [true, false]
 	};
 }
 
@@ -22,7 +23,7 @@ exports.getValues = function () {
  */
 exports.getPriorities = function () {
 	return {
-		errors: "01", warnings: "02",	hints: "03", informations: "04"
+		errors: "01", warnings: "02",	hints: "03", informations: "04", simpleTemplate: "05"
 	};
 }
 
@@ -33,7 +34,8 @@ exports.getPriorities = function () {
 exports.getDescriptions = function () {
 	return {
     errors: "Show all Errors.", warnings: "Show all Warnings.",
-    hints: "Show all Hints.", informations: "Show all Informations."
+    hints: "Show all Hints.", informations: "Show all Informations.",
+    simpleTemplate: "True = use your simpleTemplate."
 	};
 }
 
@@ -43,9 +45,18 @@ exports.getDescriptions = function () {
  */
 exports.getDefaults = function () {
 	return {
-		"errors": true,
-		"warnings": true,
-		"hints": true,
-		"informations": true
+		"errors": "true",
+		"warnings": "true",
+		"hints": "true",
+    "informations": "true",
+    "simpleTemplate": "false"
 	};
+};
+
+/**
+ * Get the default template.
+ * @returns {String} - the default template
+ */
+exports.getDefaultTemplate = function () {
+  return "$severity, $path, \"$message\", $source(code), [$startLine:$startCol]";
 }

@@ -1,5 +1,5 @@
 const vscode = require('vscode');
-const commands = require('./commands');
+const argsVault = require('./argsVault');
 const jsonc = require("jsonc-parser");
 
 
@@ -39,7 +39,7 @@ exports.makeKeybindingsCompletionProvider = function(context) {
             const argsRange = new vscode.Range(document.positionAt(argsStartingIndex), document.positionAt(argsLength));
             const argsText = document.getText(argsRange);
 
-            const args = commands.getKeys();
+            const args = argsVault.getKeys();
             return _filterCompletionsItemsNotUsed(args, argsText, position);
           }
           else return undefined;
@@ -97,9 +97,9 @@ function _makeCompletionItem(key, replaceRange, defaultValue, sortText, document
  */
 function _filterCompletionsItemsNotUsed(argArray, argsText, position) {
 
-  const defaults = commands.getDefaults();
-	const priorities = commands.getPriorities();
-	const descriptions = commands.getDescriptions();
+  const defaults = argsVault.getDefaults();
+	const priorities = argsVault.getPriorities();
+	const descriptions = argsVault.getDescriptions();
   
 	/** @type { Array<vscode.CompletionItem> } */
 	const completionArray = [];

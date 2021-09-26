@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const argsVault = require('./argsVault');
 const messages = require('./messages');
 const provider = require('./completionProviders');
 
@@ -12,10 +13,10 @@ async function activate(context) {
 
 	let disposable = vscode.commands.registerCommand('problems-copy.copyAll', async function (args) {
 
-    // const diagObject = [];
-    // let index = 0;
+    const diagObject = [];
+    let index = 0;
     let filter = "";
-    let simpleTemplate = "";
+    let template = "";
 
     let diagnostics = vscode.languages.getDiagnostics();
 
@@ -29,23 +30,31 @@ async function activate(context) {
     if (diagnostics.length) diagnostics = diagnostics.filter(diagnostic => diagnostic[1].length > 0);
     let message = "";
 
-    const useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate');
-    if (useTemplate) simpleTemplate = await vscode.workspace.getConfiguration().get('problems-copy.simpleTemplate');
+    let useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate');
+    useTemplate = useTemplate || args?.simpleTemplate;
+
+    if (useTemplate) template = await vscode.workspace.getConfiguration().get('problems-copy.simpleTemplate');
+    if (!template) template = argsVault.getDefaultTemplate();
 
     for (const diagnostic of diagnostics) {
-        
-      // let parsed = {};
+
       let filteredArray = messages.filterArray(diagnostic[1], filter); 
       
-      for (const problem of filteredArray) {
-        // parsed = _parseMessage(diagnostic[0].path, problem);
-        // diagObject[index++] = parsed;
-        message += messages.buildTemplateMessage(diagnostic[0].path, problem, simpleTemplate);
-
+      if (useTemplate) {
+        for (const problem of filteredArray) {
+          message += messages.buildTemplateMessage(diagnostic[0].path, problem, template);
+        }
+      }
+      else {
+        for (const problem of filteredArray) {
+          let parsed = {};
+          parsed = messages.parseFullMessage(diagnostic[0].path, problem);
+          diagObject[index++] = parsed;
+        }
       }
     }
-    // await vscode.env.clipboard.writeText(JSON.stringify(diagObject, null, '\t'));
-    await vscode.env.clipboard.writeText(message);
+    if (useTemplate) await vscode.env.clipboard.writeText(message);
+    else await vscode.env.clipboard.writeText(JSON.stringify(diagObject, null, '\t'));
 
 	});
   context.subscriptions.push(disposable);
@@ -58,22 +67,38 @@ async function activate(context) {
     const diagObject = [];
     let index = 0;
     let filter = "";
+    let template = "";
+
+    let useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate');
+    useTemplate = useTemplate || args?.simpleTemplate;
+
+    if (useTemplate) template = await vscode.workspace.getConfiguration().get('problems-copy.simpleTemplate');
+    if (!template) template = argsVault.getDefaultTemplate();
 
     let diagnostics = vscode.languages.getDiagnostics(uri);
     if (diagnostics.length && args && Object.entries(args).length) {
       filter = messages.filterSeverity(args);
     }
     else filter = "Errors+Warnings+Informations+Hints";
-
-    let parsed = {};
     let filteredArray = messages.filterArray(diagnostics, filter); 
-    
-    for (const problem of filteredArray) {
-      parsed = messages.parseFullMessage(uri.path, problem);
-      diagObject[index++] = parsed;
-    }
 
-    await vscode.env.clipboard.writeText(JSON.stringify(diagObject, null, '\t'));
+    let message = "";
+
+    if (useTemplate) {
+      for (const problem of filteredArray) {
+        message += messages.buildTemplateMessage(uri.path, problem, template);
+      }
+    }
+    else {
+      for (const problem of filteredArray) {
+        let parsed = {};
+        parsed = messages.parseFullMessage(uri.path, problem);
+        diagObject[index++] = parsed;
+      }
+    }
+    
+    if (useTemplate) await vscode.env.clipboard.writeText(message);
+    else await vscode.env.clipboard.writeText(JSON.stringify(diagObject, null, '\t'));
   });
   context.subscriptions.push(disposable2);
 }
@@ -86,5 +111,4 @@ exports.activate = activate;
 // 	activate,
 // 	deactivate
 // }
-
 

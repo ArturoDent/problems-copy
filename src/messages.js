@@ -1,7 +1,5 @@
 const vscode = require('vscode');
 
-
-
 /**
  * Build a string indicating which options were included in the keybinding: errors, warnings, etc.
  * 
@@ -117,38 +115,21 @@ exports.buildTemplateMessage = function (path, details, template) {
   compactMessage = compactMessage.replace(/\$endLine/g, details.range.end.line + 1);
   compactMessage = compactMessage.replace(/\$endCol/g, details.range.end.character + 1);
 
-  // TODO: relatedInformation, loop
-
   let newline = "";
 
-  // if (relatedInformation) {
-  //   if (compactMessage.endsWith("\\n")) {
-  //     newline = "\n";
-  //     compactMessage = compactMessage.substring(0, compactMessage.length - 2);
-  //   }
-  //   let { location, message } = relatedInformation[0];
-  //   compactMessage += `\n\t${ vscode.workspace.asRelativePath(location.uri.path) } :  ${ message }  `;
-  //   compactMessage += `[${ location.range.start.line + 1 }:`;
-  //   compactMessage += `${ location.range.start.character + 1 }]${newline}`;
-  // }
-
-    if (compactMessage.endsWith("\\n")) {
-      newline = "\n";
-      compactMessage = compactMessage.substring(0, compactMessage.length - 2);
-    }
+  if (compactMessage.endsWith("\\n")) {
+    newline = "\n";
+    compactMessage = compactMessage.substring(0, compactMessage.length - 2);
+  }
 
   if (relatedInformation) {      // if length > 1: loop
     
-    // let index = 0;
-
     for (const relatedInfoItem of relatedInformation) {
 
       let { location, message } = relatedInfoItem;
-      compactMessage += `\n\t${ vscode.workspace.asRelativePath(location.uri.path) } :  ${ message }  `;
+      compactMessage += `\n\t\t${ vscode.workspace.asRelativePath(location.uri.path) } :  ${ message }  `;
       compactMessage += `[${ location.range.start.line + 1 }:`;
-      // compactMessage += `${ location.range.start.character + 1 }]${newline}`;
       compactMessage += `${ location.range.start.character + 1 }]`;
-      // index++;
     }
   }
 
