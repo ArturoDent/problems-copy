@@ -15,7 +15,9 @@ async function activate(context) {
 
     const diagObject = [];
     let index = 0;
-    let filter = "";
+    let severityFilter = "";
+    let messageFilter = "";
+    // let fileFilter = "";
     let template = "";
 
     let diagnostics = vscode.languages.getDiagnostics();
@@ -23,9 +25,11 @@ async function activate(context) {
     // check for empty args and no args key at all: from Command Palette or keybinding
     // default = all of them: "Errors+Warnings+Informations+Hints"
     if (diagnostics.length && args && Object.entries(args).length) {
-      filter = messages.filterSeverity(args);
+      severityFilter = messages.severityFilter(args);
     }
-    else filter = "Errors+Warnings+Informations+Hints";  // default
+    else severityFilter = "Errors+Warnings+Informations+Hints";  // default
+    messageFilter = args?.messageFilter;
+    // fileFilter = args?.fileFilter;
 
     if (diagnostics.length) diagnostics = diagnostics.filter(diagnostic => diagnostic[1].length > 0);
     let message = "";
@@ -38,7 +42,9 @@ async function activate(context) {
 
     for (const diagnostic of diagnostics) {
 
-      let filteredArray = messages.filterArray(diagnostic[1], filter); 
+      let filteredArray = messages.filterBySeverity(diagnostic[1], severityFilter);
+      filteredArray = messages.filterByMessage(filteredArray, messageFilter);
+      // filteredArray = messages.filterByFile(filteredArray, fileFilter);
       
       if (useTemplate) {
         for (const problem of filteredArray) {
@@ -66,7 +72,9 @@ async function activate(context) {
     const uri = vscode.window.activeTextEditor.document.uri;
     const diagObject = [];
     let index = 0;
-    let filter = "";
+    let severityFilter = "";
+    let messageFilter = "";
+    // let fileFilter = "";
     let template = "";
 
     let useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate');
@@ -77,10 +85,15 @@ async function activate(context) {
 
     let diagnostics = vscode.languages.getDiagnostics(uri);
     if (diagnostics.length && args && Object.entries(args).length) {
-      filter = messages.filterSeverity(args);
+      severityFilter = messages.severityFilter(args);
+      messageFilter = args?.messageFilter;
+      // fileFilter = args?.fileFilter;
     }
-    else filter = "Errors+Warnings+Informations+Hints";
-    let filteredArray = messages.filterArray(diagnostics, filter); 
+    else severityFilter = "Errors+Warnings+Informations+Hints";
+    let filteredArray = messages.filterBySeverity(diagnostics, severityFilter);
+    filteredArray = messages.filterByMessage(diagnostics, messageFilter);
+    // filteredArray = messages.filterByFile(diagnostics, fileFilter);
+
 
     let message = "";
 

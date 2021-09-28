@@ -83,6 +83,7 @@ function _makeCompletionItem(key, replaceRange, defaultValue, sortText, document
   if (defaultValue) item.detail = `default: ${ defaultValue }`;
 	if (sortText) item.sortText = sortText;
   if (documentation) item.documentation = new vscode.MarkdownString(documentation);
+  // item.supportHtml = true;  // add after vscode v1.61
   
 	return item;
 }

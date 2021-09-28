@@ -4,7 +4,7 @@
 	"description": "Copy the Problem messages",
 	"publisher": "ArturoDent",
 	"license": "MIT",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ArturoDent/problems-copy"
@@ -43,14 +43,14 @@
 					"problems-copy.simpleTemplate": {
 						"type": "string",
 						"scope": "machine",
-						"default": "$severity, $path, \"$message\", $source(code), [$startLine:$startCol]",
-						"markdownDescription": "Create a template for simpler output template. The default is comma-separated but that is not mandatory.  Available entries: `$severity, $path, $message, $source, $code, $startLine, $startCol, $endLine, $endCol, $relatedInfo`."
+						"default": "${severity}, ${path}, \"${message}\", ${source}(${code}), [${startLine}:${startCol}]",
+						"markdownDescription": "Create a template for simpler output. The default is comma-separated.  Available entries: `${severity}, ${path}, ${message}, ${source}, ${code}, ${startLine}, ${startCol}, ${endLine}, ${endCol}, ${relatedInfo}`."
 					},
 					"problems-copy.useSimpleTemplate": {
 						"type": "boolean",
 						"scope": "machine",
 						"default": false,
-						"markdownDescription": "Whether to **always** use the simpleTemplate form of copied problems.  This will apply to all commands unless specifically overridden in a keybinding."
+						"markdownDescription": "Whether to **always** use the simpleTemplate form to copy problems.  This will apply to all commands unless specifically overridden in a keybinding."
 					}
 				}
 			}

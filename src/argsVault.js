@@ -3,7 +3,8 @@
  * @returns {Array}
  */
 exports.getKeys = function () {
-  return ["errors", "warnings", "hints", "informations", "simpleTemplate"];
+  // return ["errors", "warnings", "hints", "informations", "messageFilter", "fileFilter", "simpleTemplate"];
+  return ["errors", "warnings", "hints", "informations", "messageFilter", "simpleTemplate"];
 }
 
 /**
@@ -13,7 +14,7 @@ exports.getKeys = function () {
 exports.getValues = function () {
 	return {
     errors: [true, false], warnings: [true, false], hints: [true, false],
-    informations: [true, false], simpleTemplate: [true, false]
+    informations: [true, false], messageFilter: "", simpleTemplate: [true, false]
 	};
 }
 
@@ -23,7 +24,8 @@ exports.getValues = function () {
  */
 exports.getPriorities = function () {
 	return {
-		errors: "01", warnings: "02",	hints: "03", informations: "04", simpleTemplate: "05"
+    errors: "01", warnings: "02", hints: "03", informations: "04",
+    messageFilter: "04", simpleTemplate: "06"
 	};
 }
 
@@ -35,6 +37,8 @@ exports.getDescriptions = function () {
 	return {
     errors: "Show all Errors.", warnings: "Show all Warnings.",
     hints: "Show all Hints.", informations: "Show all Informations.",
+    messageFilter: "Filter messages for specified text string.",
+    // fileFilter: "Filter files - globs allowed, e.g., `**/*.js`.",
     simpleTemplate: "True = use your simpleTemplate."
 	};
 }
@@ -58,5 +62,5 @@ exports.getDefaults = function () {
  * @returns {String} - the default template
  */
 exports.getDefaultTemplate = function () {
-  return "$severity, $path, \"$message\", $source(code), [$startLine:$startCol]";
+  return "${severity}, ${path}, \"${message}\", ${source}(${code}), [${startLine}:${startCol}]";
 }
