@@ -1,4 +1,6 @@
 const vscode = require('vscode');
+const argsVault = require('./argsVault');
+const fastGlob = require('fast-glob');
 
 /**
  * Build a string indicating which options were included in the keybinding: errors, warnings, etc.
@@ -37,6 +39,26 @@ exports.filterBySeverity  = function (diagnostics, severityFilter) {
   return filteredArray;
 }
 
+
+/**
+ * Get the template if keybinding or setting is true.
+ * @param {Boolean} argsUseSimpleTemplate 
+ * @returns {Promise<String>} useTemplate
+ */
+exports.useTemplate = async function (argsUseSimpleTemplate) {
+  
+  let useTemplate = false;
+  let template = "";
+
+  if (argsUseSimpleTemplate === false) return "";
+
+  useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate');
+  if (useTemplate || argsUseSimpleTemplate) template = await vscode.workspace.getConfiguration().get('problems-copy.simpleTemplate');
+  if (useTemplate && !template) template = argsVault.getDefaultTemplate();
+
+  return template;
+}
+
 /**
  * Remove from the diagnostics array those whose messages or relatedInformation[0].message do not include the message text filter.
  * @param {Array<vscode.Diagnostic>} diagnostics 
@@ -71,20 +93,60 @@ exports.filterByMessage  = function (diagnostics, messageFilter) {
 
 /**
  * Remove from the diagnostics array any files not requested
- * @param {Array<vscode.Diagnostic>} diagnostics 
  * @param {String} fileFilter - filter out files not in fileFilter
- * @returns {Array<vscode.Diagnostic>} filteredArray
+ * @param { [vscode.Uri, vscode.Diagnostic[]][] } diagnostics
+ * @returns { Promise<[vscode.Uri, vscode.Diagnostic[]][]> } filteredArray
  */
-exports.filterByFile  = function (diagnostics, fileFilter) {
+exports.getFilteredDiagnosticsCopyAll  = async function (fileFilter, diagnostics) {
 
   if (!fileFilter) return diagnostics;
 
-  let filteredArray = diagnostics;
+  // const uri = vscode.window.activeTextEditor.document.uri;
 
-  // loop if multiple, comma-separated values
-  // if (!fileFilter.includes("Errors")) filteredArray = filteredArray.filter( problem => problem.resouce );
+  // glob.sync("**/test/**", { "ignore":['**/node_modules/**'], cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath })
+  // const files = glob.sync(fileFilter, { cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath });
 
-  return filteredArray;
+  // glob.sync("**/test, **/examples", { "ignore":['**/node_modules/**'], nodir: true, cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath })
+
+      // vscode.workspace.workspaceFolders - loop through?
+  // const fgFiles = fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath });
+  let fgFiles = [];
+ 
+  for (const workspace of vscode.workspace.workspaceFolders) {
+    fgFiles.push(fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: workspace.uri.fsPath }));
+  }
+
+  fgFiles = fgFiles.flat();  // multiple root workspace, fgFiles could be [ [], [] ] an array of arrays
+
+  diagnostics = diagnostics.filter((diagnostic) => {
+    return fgFiles.includes(vscode.workspace.asRelativePath(diagnostic[0].path));
+  });
+  
+  return diagnostics;
+}
+
+/**
+ * Remove from the diagnostics array any files not requested
+ * @param {String} fileFilter - filter out files not in fileFilter
+ * @param { vscode.Diagnostic[] } diagnostics
+ * @param {(vscode.Uri|null)} uri 
+ * @returns { Promise<vscode.Diagnostic[]> } filteredArray
+ */
+exports.getFilteredDiagnosticsCopyCurrent  = async function (fileFilter, diagnostics, uri) {
+
+  if (!fileFilter || !uri) return diagnostics;
+
+      // vscode.workspace.workspaceFolders - loop through?
+  // const fgFiles = fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath });
+ 
+  const fgFiles = [];
+
+  for (const workspace of vscode.workspace.workspaceFolders) {
+    fgFiles.push(fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: workspace.uri.fsPath }));
+  }
+
+  if (fgFiles.flat().includes(vscode.workspace.asRelativePath(uri))) return diagnostics;
+  else return [];
 }
 
 /**
