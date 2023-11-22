@@ -30,7 +30,7 @@ The `simpleTemplate` default id &emsp; *\${severity}, \${path}, \"\${message}\",
 
 Here is how problems are shown in the Problems Panel by VS Code:  
 
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; <img src="https://github.com/ArturoDent/problems-copy/blob/master/images/defaultProblemsView.jpg?raw=true" width="600" height="250" alt="default problems view in vscode"/>  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; <img src="https://github.com/ArturoDent/problems-copy/blob/main/images/defaultProblemsView.jpg?raw=true" width="600" height="250" alt="default problems view in vscode"/>  
 
 The default template produces the following from of output:  
 
