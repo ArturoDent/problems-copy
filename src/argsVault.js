@@ -1,6 +1,6 @@
 /**
  * Get just the problems-copy args keys, like "errors", "warnings", etc.
- * @returns {Array}
+ * @returns {Array<String>}
  */
 exports.getKeys = function () {
   return ["errors", "warnings", "hints", "informations", "messageFilter", "fileFilter", "simpleTemplate"];
@@ -19,7 +19,7 @@ exports.getValues = function () {
 
 /**
  * Get just the problems-copy args priorities, for ordering in suggestions.
- * @returns {Object}
+ * @returns {Object<String, String>}
  */
 exports.getPriorities = function () {
 	return {
@@ -30,7 +30,7 @@ exports.getPriorities = function () {
 
 /**
  * Get just the problems-copy args descriptions, for suggestions.
- * @returns {Object}
+ * @returns {Object<String, String>}
  */
 exports.getDescriptions = function () {
 	return {
@@ -46,7 +46,7 @@ exports.getDescriptions = function () {
 
 /**
  * Get the default values for all problems-copy keys
- * @returns {Object} - {"errors": true, "warnings": true}
+ * @returns {Object<String, String>} - {"errors": true, "warnings": true}
  */
 exports.getDefaults = function () {
 	return {

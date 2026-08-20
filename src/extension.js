@@ -78,7 +78,13 @@ async function activate(context) {
 
   let disposable2 = vscode.commands.registerCommand('problems-copy.copyCurrentFileMessages', async function (args) {
 
-    const uri = vscode.window.activeTextEditor.document.uri;
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      notify.showError(`There is no active editor.`);
+      return;
+    }
+
+    const uri = editor.document.uri;
     const fileName = vscode.workspace.asRelativePath(uri.path);
 
     const diagObject = [];

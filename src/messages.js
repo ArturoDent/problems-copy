@@ -3,9 +3,21 @@ const argsVault = require('./argsVault');
 const fastGlob = require('fast-glob');
 
 /**
+ * @typedef {Object} SeverityKeybindingArgs
+ * @property {Boolean} [errors]
+ * @property {Boolean} [Errors]
+ * @property {Boolean} [warnings]
+ * @property {Boolean} [Warnings]
+ * @property {Boolean} [informations]
+ * @property {Boolean} [Informations]
+ * @property {Boolean} [hints]
+ * @property {Boolean} [Hints]
+ */
+
+/**
  * Build a string indicating which options were included in the keybinding: errors, warnings, etc.
- * 
- * @param {Object} args - from keybindings
+ *
+ * @param {SeverityKeybindingArgs} args - from keybindings
  * @returns {String} filter
  */
 exports.severityFilter = function (args) {
@@ -52,8 +64,8 @@ exports.useTemplate = async function (argsUseSimpleTemplate) {
 
   if (argsUseSimpleTemplate === false) return "";
 
-  useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate');
-  if (useTemplate || argsUseSimpleTemplate) template = await vscode.workspace.getConfiguration().get('problems-copy.simpleTemplate');
+  useTemplate = await vscode.workspace.getConfiguration().get('problems-copy.useSimpleTemplate', false);
+  if (useTemplate || argsUseSimpleTemplate) template = await vscode.workspace.getConfiguration().get('problems-copy.simpleTemplate', "");
   if (useTemplate && !template) template = argsVault.getDefaultTemplate();
 
   return template;
@@ -68,15 +80,16 @@ exports.useTemplate = async function (argsUseSimpleTemplate) {
 exports.filterByMessage  = function (diagnostics, messageFilter) {
 
   if (!messageFilter) return diagnostics;
+  /** @type {RegExp} */
   let regex;
 
   // /declared/i
   const filterRegex = new RegExp(/^\/?(?<body>.*?)\/?(?<flags>[gmi]*)$/m);
 
   const reduce = messageFilter.match(filterRegex);
-  
+
   // if no flags, make it case-insensitive like vscode's built-in message filter
-  if (reduce.groups?.body) regex = new RegExp(reduce.groups.body, reduce.groups.flags || "i");
+  if (reduce?.groups?.body) regex = new RegExp(reduce.groups.body, reduce.groups.flags || "i");
 
   return diagnostics.filter(problem => {
 
@@ -110,16 +123,17 @@ exports.getFilteredDiagnosticsCopyAll  = async function (fileFilter, diagnostics
 
       // vscode.workspace.workspaceFolders - loop through?
   // const fgFiles = fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath });
+  /** @type {String[][]} */
   let fgFiles = [];
- 
-  for (const workspace of vscode.workspace.workspaceFolders) {
+
+  for (const workspace of vscode.workspace.workspaceFolders ?? []) {
     fgFiles.push(fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: workspace.uri.fsPath }));
   }
 
-  fgFiles = fgFiles.flat();  // multiple root workspace, fgFiles could be [ [], [] ] an array of arrays
+  const flatFiles = fgFiles.flat();  // multiple root workspace, fgFiles could be [ [], [] ] an array of arrays
 
   diagnostics = diagnostics.filter((diagnostic) => {
-    return fgFiles.includes(vscode.workspace.asRelativePath(diagnostic[0].path));
+    return flatFiles.includes(vscode.workspace.asRelativePath(diagnostic[0].path));
   });
   
   return diagnostics;
@@ -139,9 +153,10 @@ exports.getFilteredDiagnosticsCopyCurrent  = async function (fileFilter, diagnos
       // vscode.workspace.workspaceFolders - loop through?
   // const fgFiles = fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: vscode.workspace.getWorkspaceFolder(uri).uri.fsPath });
  
+  /** @type {String[][]} */
   const fgFiles = [];
 
-  for (const workspace of vscode.workspace.workspaceFolders) {
+  for (const workspace of vscode.workspace.workspaceFolders ?? []) {
     fgFiles.push(fastGlob.sync(fileFilter, { unique: true, onlyFiles: true, cwd: workspace.uri.fsPath }));
   }
 
@@ -150,16 +165,41 @@ exports.getFilteredDiagnosticsCopyCurrent  = async function (fileFilter, diagnos
 }
 
 /**
+ * @typedef {Object} ParsedRelatedInformation
+ * @property {Number} startLineNumber
+ * @property {Number} startColumn
+ * @property {Number} endLineNumber
+ * @property {Number} endColumn
+ * @property {String} message
+ * @property {String} resource
+ */
+
+/**
+ * @typedef {Object} ParsedDiagnostic
+ * @property {String} resource
+ * @property {String|Number|{value: (String|Number), target: vscode.Uri}|undefined} [code]
+ * @property {vscode.DiagnosticSeverity} severity
+ * @property {String} message
+ * @property {String|undefined} [source]
+ * @property {Number} [startLineNumber]
+ * @property {Number} [startColumn]
+ * @property {Number} [endLineNumber]
+ * @property {Number} [endColumn]
+ * @property {ParsedRelatedInformation[]} [relatedInformation]
+ */
+
+/**
  * Parse the values from a single vscode.Diagnostic
- * 
+ *
  * @param {String} path - file path from Diagnostic[0]
- * @param {Object} details - entires from Diagnostic[1]
- * @returns {Object} obj - copy Diagnostic values to our Object
+ * @param {vscode.Diagnostic} details - entires from Diagnostic[1]
+ * @returns {ParsedDiagnostic} obj - copy Diagnostic values to our Object
  */
 exports.parseFullMessage = function (path, details) {
-  
+
   const resource = path;
   const { code, severity, message, source } = details;
+  /** @type {ParsedDiagnostic} */
   const obj = { resource, code, severity, message, source };
   // obj.resource = path;
   // obj.owner = details.owner;  // not surfaced in the getDiagnostics()
@@ -170,19 +210,18 @@ exports.parseFullMessage = function (path, details) {
 
   if (details.relatedInformation) {                   // if length > 1: loop
     obj.relatedInformation = [];
-    let index = 0;
 
     for (const relatedInfoItem of details.relatedInformation) {
-    
-      obj.relatedInformation[index] = {};
+
       const related = relatedInfoItem.location;
-      obj.relatedInformation[index].startLineNumber = related.range.start.line + 1;
-      obj.relatedInformation[index].startColumn = related.range.start.character + 1;
-      obj.relatedInformation[index].endLineNumber = related.range.end.line + 1;
-      obj.relatedInformation[index].endColumn = related.range.end.character + 1;
-      obj.relatedInformation[index].message = relatedInfoItem.message;
-      obj.relatedInformation[index].resource = related.uri.path;
-      index++;
+      obj.relatedInformation.push({
+        startLineNumber: related.range.start.line + 1,
+        startColumn: related.range.start.character + 1,
+        endLineNumber: related.range.end.line + 1,
+        endColumn: related.range.end.character + 1,
+        message: relatedInfoItem.message,
+        resource: related.uri.path,
+      });
     }
   }
   return obj;
@@ -190,9 +229,9 @@ exports.parseFullMessage = function (path, details) {
 
 /**
  * Parse the values from a single vscode.Diagnostic into a compactMode string message
- * 
+ *
  * @param {String} path - file path from Diagnostic[0]
- * @param {Object} details - entires from Diagnostic[1]
+ * @param {vscode.Diagnostic} details - entires from Diagnostic[1]
  * @param {String} template - simple template form to use
  * @returns {String} obj - copy Diagnostic values to our Object
  */
@@ -209,23 +248,25 @@ exports.buildTemplateMessage = function (path, details, template) {
     else if (severity === 1) return "Warning";
     else if (severity === 2) return "Information";
     else if (severity === 3) return "Hint";
+    else return "";
   }
 
   compactMessage = compactMessage.replace(/\${path}/g, vscode.workspace.asRelativePath(path));
   compactMessage = compactMessage.replace(/\${message}/g, message);
-  compactMessage = compactMessage.replace(/\${source}/g, source);
+  compactMessage = compactMessage.replace(/\${source}/g, source ?? "");
 
   compactMessage = compactMessage.replace(/\${code}/g, _getCode);
   function _getCode() {
-    if (typeof code === "object") return code.value;
+    if (typeof code === "object") return String(code.value);
     else if (typeof code === "number") return String(code);
-    else if (code === undefined) return "";
+    else if (typeof code === "string") return code;
+    else return "";
   }
 
-  compactMessage = compactMessage.replace(/\${startLine}/g, details.range.start.line + 1);
-  compactMessage = compactMessage.replace(/\${startCol}/g, details.range.start.character + 1);
-  compactMessage = compactMessage.replace(/\${endLine}/g, details.range.end.line + 1);
-  compactMessage = compactMessage.replace(/\${endCol}/g, details.range.end.character + 1);
+  compactMessage = compactMessage.replace(/\${startLine}/g, String(details.range.start.line + 1));
+  compactMessage = compactMessage.replace(/\${startCol}/g, String(details.range.start.character + 1));
+  compactMessage = compactMessage.replace(/\${endLine}/g, String(details.range.end.line + 1));
+  compactMessage = compactMessage.replace(/\${endCol}/g, String(details.range.end.character + 1));
 
   let newline = "";
 

@@ -17,20 +17,24 @@ exports.makeKeybindingsCompletionProvider = function(context) {
           if (linePrefix.search(/^\s*"$/m) === -1) return undefined;
 							
           const rootNode = jsonc.parseTree(document.getText());
+          if (!rootNode) return undefined;
+
           const curLocation = jsonc.getLocation(document.getText(), document.offsetAt(position));
           if (curLocation?.path[1] !== 'args') return undefined;
 
           const thisConfig = _findConfig(rootNode, document.offsetAt(position));
+          if (!thisConfig) return undefined;
+
           const nodeValue = jsonc.getNodeValue(thisConfig);
           const command = nodeValue.command;
 
           // copyAll || copyCurrentFileMessages
           if (!command?.startsWith("problems-copy")) return undefined;
-          
+
           if (curLocation.isAtPropertyKey) {
-            
-            const argsNode = thisConfig.children.filter(entry => {
-              return entry.children[0].value === "args";
+
+            const argsNode = (thisConfig.children ?? []).filter(entry => {
+              return entry.children?.[0].value === "args";
             });
 
             const argsStartingIndex = argsNode[0].offset;
@@ -52,14 +56,14 @@ exports.makeKeybindingsCompletionProvider = function(context) {
 
 /**
  * Get the keybinding where the cursor is located.
- * 
- * @param {Object} rootNode - all parsed confogs in keybindings.json
+ *
+ * @param {import('jsonc-parser').Node} rootNode - all parsed confogs in keybindings.json
  * @param {Number} offset - of cursor position
- * @returns {Object} - the node where the cursor is located
+ * @returns {import('jsonc-parser').Node|undefined} - the node where the cursor is located
  */
 function _findConfig(rootNode, offset)  {
 
-  for (const node of rootNode.children) {
+  for (const node of rootNode.children ?? []) {
     if (node.offset <= offset && (node.offset + node.length > offset))
       return node;
   }

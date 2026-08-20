@@ -3,6 +3,7 @@
 		"module": "commonjs",
 		"target": "es2020",
 		"checkJs": true,  /* Typecheck .js files. */
+		"strict": true,
 		"lib": [
 			"es2020"
 		]
