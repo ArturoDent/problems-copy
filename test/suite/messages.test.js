@@ -1,39 +1,45 @@
 const assert = require('assert');
+const vscode = require('vscode');
 
 const messages = require('../../src/messages');
 
-suite('buildTemplateMessage ${code} macro', () => {
+/**
+ * @param {String|Number|{value: (String|Number), target: vscode.Uri}|undefined} code
+ * @returns {vscode.Diagnostic}
+ */
+function makeDiagnostic(code) {
+  const range = new vscode.Range(0, 0, 0, 5);
+  const diagnostic = new vscode.Diagnostic(range, 'test message', vscode.DiagnosticSeverity.Warning);
+  diagnostic.source = 'Sigasi';
+  diagnostic.code = code;
+  return diagnostic;
+}
 
-  const baseDetails = {
-    severity: 1,
-    message: 'test message',
-    source: 'Sigasi',
-    range: { start: { line: 0, character: 0 }, end: { line: 0, character: 5 } }
-  };
+suite('buildTemplateMessage ${code} macro', () => {
 
   // diagnostic.code as a plain string (e.g. Sigasi's numeric codes: "3", "130")
   test('string code', () => {
-    const details = { ...baseDetails, code: '130' };
+    const details = makeDiagnostic('130');
     const result = messages.buildTemplateMessage('test.sv', details, '${source}: "${code}"');
-    assert.strictEqual(result, 'Sigasi: "130"\n');
+    assert.equal(result, 'Sigasi: "130"\n');
   });
 
   test('number code', () => {
-    const details = { ...baseDetails, code: 42 };
+    const details = makeDiagnostic(42);
     const result = messages.buildTemplateMessage('test.js', details, '${source}(${code})');
-    assert.strictEqual(result, 'Sigasi(42)\n');
+    assert.equal(result, 'Sigasi(42)\n');
   });
 
   // diagnostic.code as { value, target } (e.g. eslint)
   test('object code with value', () => {
-    const details = { ...baseDetails, code: { value: 'no-unused-vars', target: undefined } };
+    const details = makeDiagnostic({ value: 'no-unused-vars', target: vscode.Uri.file('test.js') });
     const result = messages.buildTemplateMessage('test.js', details, '${source}(${code})');
-    assert.strictEqual(result, 'Sigasi(no-unused-vars)\n');
+    assert.equal(result, 'Sigasi(no-unused-vars)\n');
   });
 
   test('undefined code', () => {
-    const details = { ...baseDetails, code: undefined };
+    const details = makeDiagnostic(undefined);
     const result = messages.buildTemplateMessage('test.js', details, '${source}(${code})');
-    assert.strictEqual(result, 'Sigasi()\n');
+    assert.equal(result, 'Sigasi()\n');
   });
 });
